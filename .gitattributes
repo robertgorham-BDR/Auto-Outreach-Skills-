@@ -1,0 +1,5 @@
+# Keep the shell guardrail + CI workflow LF-only so `bash scripts/pii-scan.sh`
+# runs under git-bash on Windows (a CRLF shebang / `set -euo pipefail\r` breaks).
+*.sh                    text eol=lf
+.github/workflows/*.yml text eol=lf
+*.ps1                   text eol=crlf

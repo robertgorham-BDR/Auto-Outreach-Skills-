@@ -1,0 +1,17 @@
+name: PII / leak scan
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
+
+jobs:
+  pii-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run PII / leak scan
+        run: bash scripts/pii-scan.sh

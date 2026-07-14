@@ -1,5 +1,7 @@
 # Testsigma BDR Team Kit
 
+[![PII / leak scan](https://github.com/robertgorham-BDR/Auto-Outreach-Skills-/actions/workflows/pii-scan.yml/badge.svg)](https://github.com/robertgorham-BDR/Auto-Outreach-Skills-/actions)
+
 The AI-assisted BDR operating system the Testsigma sales-development team runs on — email + LinkedIn + calls, end to end, at a 9/10 quality bar. **The Testsigma playbook is already built in:** the product story, the ICP and personas, the proof points, the house voice, and the full send-safety pipeline all ship configured. When you join, you configure **only your own identity and tools** (your name, your `.ai` sender, your timezone, your Apollo login, your assigned accounts, your quota) and start running batches.
 
 > **What this is NOT:** a blank any-company skeleton, and not a fire-and-forget bot. The methodology is Testsigma's and it is opinionated. Your agent does the research, drafting, and QA autonomously; **you** approve every send. You personalize the identity, not the strategy.
@@ -65,6 +67,16 @@ Only what is individual to you — every one of these is a `{{PLACEHOLDER}}` the
 - Before any push, a PII scan greps the tree for names, emails, phone numbers, and tool-ID patterns; a real person's data that isn't a `{{PLACEHOLDER}}` blocks the commit.
 
 So: the *strategy* is shared, your *data* never is.
+
+---
+
+## Quality and safety (automated)
+
+Three checks keep the repo clean and your setup correct:
+
+- **`scripts/pii-scan.sh`** — run before every push. It also runs in CI on every push and pull request via `.github/workflows/pii-scan.yml` (the badge at the top shows its status). It blocks anything that would leak a real person's data or check in operator-specific state: personal emails (`@gmail.com`, `@yahoo.com`, a specific real address), phone numbers, Apollo/record IDs (24-hex-char), real `linkedin.com/in/<slug>` URLs, and any live-data file that should be gitignored. Template tokens like `{{FIRST_NAME}}`, the `firstname.lastname@testsigma.ai` sender pattern, and labelled example names pass clean.
+- **`scripts/validate-setup.sh`** — run right after onboarding to confirm every `{{PLACEHOLDER}}` was filled and your config is complete before you send anything.
+- **`CONTRIBUTING.md`** — the fork → PR flow for improving the shared kit, kept separate from your gitignored per-rep data.
 
 ---
 
