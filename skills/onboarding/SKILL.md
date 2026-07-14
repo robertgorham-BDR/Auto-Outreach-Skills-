@@ -1,112 +1,83 @@
 ---
 name: onboarding
-description: "Configure this BDR Starter Kit for a new rep. Run once, right after cloning. Interview the rep across 11 areas, fill config.json + voice-profile.md, replace every {{PLACEHOLDER}}, connect their stack, and verify no one else's data remains. Every question below exists because getting it wrong caused a real problem in a production BDR system."
+description: "Configure this Testsigma BDR Starter Kit for a new rep. Run once, right after cloning. Testsigma's company, product, ICP, proof points, house voice, and outreach process are already baked into the kit — onboarding does NOT re-ask about them. It only collects what is unique to THIS rep (name, work + sender email, timezone, Apollo login + email-account IDs, LinkedIn, assigned accounts, quota + daily targets), sets up the machine/repo/tools, optionally does a light personal-voice calibration on top of the house voice, fills every {{PLACEHOLDER}}, and verifies the only identity left in the repo is the rep's own."
 ---
 
 # Onboarding — set this kit up for THIS rep
 
-You are turning a blank BDR framework into *their* working system, in *their* voice, on *their* stack — importing none of anyone else's data. Go one area at a time. **Ask, confirm, then write.** Do not assume or invent company facts, personas, or proof points.
+Everything about *Testsigma* is already in this kit: the company/product facts, the persona lock, the proof points, the house voice, and the full outreach gauntlet. Your job is NOT to re-teach the agent about Testsigma. Your job is to bind the kit to **one rep** — their identity, their Apollo login, their assigned accounts, their quota — so the same house system runs as *theirs*.
 
 ## Golden rules
-- **Interview, don't assume.** Wait for real answers.
+- **Do not re-ask what is already baked in.** Company, product, ICP, personas, proof points, verticals, house voice, sender rules, and the pipeline are constants for every Testsigma BDR. Read them; never interview the rep about them.
+- **Interview only for what is rep-specific.** The list below is short on purpose.
 - **One config, many files.** Fill `config.json` first, then propagate its values into the `{{PLACEHOLDERS}}`.
-- **Never paste in another rep's data.** Any real name/email/account/tool-ID that isn't this rep's is a leak — flag and remove.
-- **Their voice, not the template's.** You elicit theirs; you don't copy anyone's.
+- **Never paste in another rep's data.** Any real name / email / account / Apollo ID that isn't THIS rep's is a leak — flag and remove.
+- **The house voice is the floor; the rep's personality is an optional layer on top.** You never rewrite the structural rules; you may lightly calibrate tone if the rep wants.
 
 ---
 
 ## Step 0 — Discovery & machine setup (auto-detect FIRST, then one consolidated ask)
-"Know before you go." Before interviewing, **auto-detect everything detectable**, then fold the gaps into the interview so the rep answers once. Establish:
+"Know before you go." Before interviewing, **auto-detect everything detectable**, then fold the gaps into a single ask so the rep answers once. Establish:
 
-- **Work folder on the machine.** Where does this system live / run? (A working directory on the rep's Desktop, e.g. `Desktop\Work`, holding `MASTER_SENT_LIST`, `memory/`, `skills/`, `batches/`.) If none exists, propose creating it — **ask before creating** (persistent change). Record the confirmed path.
-- **Assigned WORK GitHub repo (Testsigma work account — NOT personal).** A work BDR's repo is under their **work** GitHub account and assigned to them by the company; they will NOT have a personal repo like a power-user might. Establish: (1) their work GitHub account, (2) the specific assigned repo URL, (3) confirm it's the Testsigma/work repo. Clone into the work folder / set `origin`; confirm the tracked branch. **Never push to a personal repo — only the assigned work repo.** If no repo is assigned yet, flag it: the rep/admin must assign one before git-backed work.
-- **Tool/connection inventory.** Detect what's connected vs missing: work Chrome profile (via the browser extension), Apollo (web login + MCP), work Gmail (reply monitoring), Calendar/Drive, and **SF/G2 via the rep's WORK claude.ai "Work" browser tab group** (the only sanctioned path to SF/G2 — never sign in from a personal browser). List present-vs-absent MCP tools. Tell the rep exactly what to connect.
+- **Work folder on the machine.** Where does this system live / run? (A working directory on the rep's Desktop, e.g. `Desktop\Work`, holding `MASTER_SENT_LIST`, `memory/`, `skills/`, `batches/`.) Confirm this repo folder IS that work folder. If none exists, propose creating it — **ask before creating** (persistent change). Record the confirmed path.
+- **Assigned WORK GitHub repo (Testsigma work account — NOT personal).** A Testsigma BDR's repo is under their **work** GitHub account and assigned by the company; they will NOT have a personal repo. Confirm: (1) the rep's work GitHub account, (2) that **this folder is that assigned Testsigma work repo** (check `git remote -v` points at the assigned repo, not a personal one), (3) the tracked branch. **Never push to a personal repo — only the assigned work repo.** If no repo is assigned yet, flag it: the rep or their manager must assign one before git-backed work.
+- **Tool / connection inventory.** Detect what's connected vs missing: the rep's work Chrome profile (via the browser extension), **Apollo** (web login + MCP — the sending + enrichment tool), work Gmail (reply monitoring), Calendar / Drive, and **Salesforce / G2 via the rep's WORK claude.ai "Work" browser tab group** (the only sanctioned path to SF/G2 — never sign in from a personal browser). List present-vs-absent MCP tools and tell the rep exactly what to connect.
+- **Survey the rep's existing Apollo sequences (do this, don't skip it).** In Apollo's web UI, list the sequences the rep owns and read each one's **step structure** — which email steps are a **manual task** (creates a task; safe to enroll; we send tailored content) vs an **automated / scheduled template** (auto-fires on enroll — you must know its exact template body first, or you double-send). This defines the routing menu the daily batch uses. Note any LinkedIn steps. Record the sequence IDs into `config.json` (gitignored) — never a shared file.
 
-**The flow:** auto-detect → **one upfront consolidated ask** (multiple-choice/checklist — "here's what I found, here's what I still need, here's what you must do") → get approval for anything persistent → configure → **report done/pending/blocked** → persist the resolved config so later sessions don't re-ask. Then proceed to the interview.
+**The flow:** auto-detect → **one upfront consolidated ask** (multiple-choice / checklist — "here's what I found, here's what I still need, here's what you must do") → get approval for anything persistent → configure → **report done / pending / blocked** → persist the resolved config so later sessions don't re-ask. Then proceed to the short interview.
 
-## Step 1 — Interview (fill `config.json`)
-Copy `config.example.json` → `config.json` first. Then work these 11 areas in order. Keep it conversational; batch related questions.
+## Step 1 — Interview the rep (fill `config.json`) — REP FIELDS ONLY
+Copy `config.example.json` → `config.json` first. The company / product / ICP / persona / proof-point / house-voice / CTA / research / pipeline sections are **Testsigma house defaults** — populate them directly from the baked-in canon (`CLAUDE.template.md`, `memory/context/`), do **not** interview the rep on them. Then ask the rep only for the fields below. Keep it conversational; batch related questions.
 
-### 1. You & logistics
-- Full name, work email, timezone.
-- **Is there a personal email/account the agent must NEVER use for work?** (Prevents sending from the wrong identity.)
-- **Which browser profile is your "work" profile?** The agent must never drive a personal profile for work tasks.
+### 1. Rep identity & logistics
+- **Full name** → `{{FULL_NAME}}` (and first name → `{{FIRST_NAME}}`).
+- **Work email** → `{{WORK_EMAIL}}`.
+- **Sender email** → `{{SENDER_EMAIL}}` — the rep's Testsigma `.ai` address, formatted `firstname.lastname@testsigma.ai`. This is the default From on every outbound send. (The `.com` address exists only for a rare, direct, fully-customized reply to a warm / inbound prospect — never the batch default.)
+- **Timezone** → `{{TIMEZONE}}` (IANA form, e.g. `America/New_York`).
+- **LinkedIn profile URL** → `{{LINKEDIN_PROFILE_URL}}`.
 
-### 2. Company & product
-- Company name, product name, one-sentence description, website.
-- Top 3 value props (the problems you solve, in customers' words).
-- Any product terms/glossary the agent must know so it never mis-describes the product.
-- A few marquee customers it can name.
+### 2. The rep's Apollo account
+- **Apollo login email** → `{{APOLLO_ACCOUNT_EMAIL}}` (the account the agent operates in).
+- **Apollo `.ai` email-account ID** → `{{APOLLO_AI_EMAIL_ACCOUNT_ID}}` (the connected mailbox for the `.ai` sender; found in Apollo's email-account settings).
+- **Apollo `.com` email-account ID** → `{{APOLLO_COM_EMAIL_ACCOUNT_ID}}` (exception-only sender).
+- **The rep's sequence IDs** → `{{SEQUENCE_IDS}}` (from the Step 0 sequence survey).
 
-### 3. ICP & persona lock (be precise — this is the #1 quality lever)
-- The exact titles you sell to, and your **seniority floor** (e.g. "Manager and above").
-- **The title-TEXT rules:** which words must appear (Manager/Director/VP/Head/Chief) and which patterns to exclude *even if the enrichment tool says otherwise* (e.g. "Lead", "Senior <IC>", "Staff", "Principal IC"). Enrichment tools mis-classify seniority constantly; the title text wins.
-- **Wrong-persona traps to exclude** (e.g. clinical/lab QA, hardware/mechanical, defense/systems, compliance/audit QA when you sell software QA).
-- Verticals and geography.
+### 3. Assigned accounts / TAM slice
+- **Which accounts is this rep allowed to prospect?** → `{{ASSIGNED_ACCOUNTS_OR_TAM_SLICE}}`. Testsigma prospecting is TAM-only; the rep works an assigned slice of the target list. Get the exact scope (a named account list, a tier, a vertical cut, a region) and drop it into `data/target-accounts.csv`. If accounts are shared across a team, confirm how the agent verifies an account/contact is THIS rep's before touching it (e.g. the CRM Account Owner field) so it never steps on a teammate.
 
-### 4. Scope & ownership
-- Where is your target-account list? (Goes in `data/target-accounts.csv`.)
-- **Are accounts shared across a team of reps?** If yes, how does the agent confirm an account/contact is YOURS before touching it? (Prevents stepping on a teammate.)
-- Any intent signals / tags that route a contact to a specific sequence?
+### 4. Quota & daily targets
+- **Monthly SAL target** → `{{MONTHLY_SAL_TARGET}}` (BANT-qualified opportunities — the hard expectation).
+- **Daily activity targets** → `{{DAILY_EMAILS}}` emails, `{{DAILY_LINKEDIN}}` LinkedIn touches, `{{DAILY_CALLS}}` calls. Derive from funnel math if the rep only has the monthly number.
+- Best send window / anything to avoid (e.g. no evening sends).
 
-### 5. Proof points (this is what makes outreach land — get real ones with real numbers)
-- At least 3: customer, the **exact quantified result**, the angle (coverage / maintenance / velocity / scale / productivity / multi-platform), and which verticals it fits. Never vague ("significant improvement") — always a number.
+### 5. Personal-voice calibration (OPTIONAL — a light layer on the house voice)
+The house voice is already locked (consultative, peer-to-peer, no em dashes, ask-don't-assert, one CTA, 75–99-word Touch 1, `Best,` + first-name sign-off). You are NOT re-eliciting a voice from scratch. Offer the rep a light calibration on top:
+- "Want to tune the tone at all? You can paste one or two lines you'd naturally open a cold intro with, and I'll match the rhythm — or we keep the house default."
+- Capture only the **Tone DNA** deltas (a few adjectives, sentence-length feel, a short list of words they'd never use). If the rep declines, keep the house default as-is.
+- The structural rules do not move. Personality is the only tunable.
 
-### 6. Voice calibration (fills `voice-profile.md`)
-- **Paste 2-3 messages you've actually sent that landed well** (or dictate how you'd naturally open a cold intro). Extract sentence length, formality, rhythm.
-- Your **exact sign-off** (e.g. "Best," then your first name). Confirm what's banned ("— Name", "Cheers,", etc.).
-- Em-dash rule, word-count range (cold vs follow-up), words you'd never use.
-- **CTA style by motion:** cold outbound (engagement question vs meeting ask?), inbound (engagement-first, no meeting ask), warm follow-up (soft next step). These differ and using the wrong one tanks replies.
-- **May the agent open by referencing a prospect's PUBLISHED content** (a post/blog/talk they authored)? This is distinct from creepy profile-mining and is a real judgment call — get the rep's ruling. Default false.
+Read the rep-field values in `config.json` back for confirmation before moving on.
 
-### 7. Tech stack & tool permissions
-- CRM, enrichment tool, email/sequencing tool, LinkedIn (Sales Nav or basic?), calendar.
-- **Sending address(es)** — and any rule where different motions send from different addresses.
-- Sequence/campaign IDs (these go in gitignored `config.json` only — never a shared file).
-- **Survey the rep's existing sequences (do this, don't just ask for IDs).** In the sequencing tool's web UI, list the rep's own sequences and read each one's **step structure** — which email steps are a **manual task** (creates a task, safe to enroll, we send tailored content) vs an **automated/scheduled template** (auto-fires on enroll — know its exact template first, or you double-send). This defines the routing menu; contacts get routed to a sequence (manual-task preferred) over one-offs. Note any LinkedIn steps.
-- **Reply monitoring for the sending address.** If outreach sends from an address whose inbox the agent doesn't natively watch, confirm replies are still captured — usually the sequencing tool (e.g. Apollo) syncs replies on any connected mailbox natively, so read replies there; a mailbox→primary forward is an optional convenience, not required.
-- **Which tools may the agent take ACTIONS in, and which is it read-only on?** (e.g. read replies but never post in a team chat.)
-
-### 8. Guardrails & approvals
-- **Approval model:** does the agent get one approval per send, or one per batch then execute? (Batch is the efficient default.)
-- Confirm the hard nevers: never send without approval, never touch another rep's data, never take an action visible to coworkers, verified-email-only, follow-ups sent as replies on-thread, and **log every send to `MASTER_SENT_LIST.csv`** (a send isn't done until it's logged).
-- Where the do-not-contact list lives.
-
-### 9. Research standard (prevents the two most common failures: fabrication + laziness)
-- Confirm: **live-profile read per contact is mandatory**; enrichment data is necessary but not sufficient.
-- When a public profile is activity-thin, **pull the Sales Nav lead page for depth** before settling for company-level personalization.
-- **Never fabricate a claim; never delegate a live profile capture to a subagent** (they hallucinate URLs/titles/activity).
-- Expect heavy dedup overlap on worked accounts — **source 3-4× the target** so a batch of 10 doesn't collapse to 3.
-
-### 10. Cadence & quota
-- Monthly target (e.g. qualified opportunities) and daily activity targets (emails / LinkedIn / calls).
-- Best send window / timezone; anything to avoid (e.g. no evening sends).
-- Follow-up cadence.
-
-### 11. Where everything lives
-- Confirm the rep knows the map (README + this table). The agent reads `CLAUDE.md` + the gauntlet + `config.json` at the start of every session.
-
-Read `config.json` back to the rep for confirmation before moving on.
-
-## Step 2 — Fill their voice (`memory/context/voice-profile.md`)
-Use their pasted examples to fill the Tone DNA + identity in *their* words. Keep the structural hard rules (no em dashes, one CTA, ask-don't-assert, length caps) — those are craft; the personality is theirs.
+## Step 2 — Light-touch voice calibration (`memory/context/voice-profile.md`)
+Fill the identity line with the rep's name (`{{FULL_NAME}}`, at Testsigma) and, if they opted into Step 1.5, drop their Tone DNA deltas into the "Tone DNA" section in their words. **Keep every structural hard rule exactly as written** — no em dashes, one CTA, ask-don't-assert, 4-paragraph standard, 75–99-word range, `Best,` + first-name sign-off. If the rep declined calibration, leave the house tone as the default and just set the name.
 
 ## Step 3 — Propagate placeholders
 Replace every `{{...}}` across the kit from `config.json`:
-- `CLAUDE.template.md` → `CLAUDE.md`; `AGENTS.template.md` → `AGENTS.md`.
-- SOPs/playbooks in `memory/`, skill templates in `skills/` (fill tool names; point ID fields at `config.json`).
-- Grep for `{{` again — zero hits = fully configured.
+- Rep tokens: `{{FULL_NAME}}`, `{{FIRST_NAME}}`, `{{WORK_EMAIL}}`, `{{SENDER_EMAIL}}`, `{{TIMEZONE}}`, `{{LINKEDIN_PROFILE_URL}}`, `{{APOLLO_ACCOUNT_EMAIL}}`, `{{APOLLO_AI_EMAIL_ACCOUNT_ID}}`, `{{APOLLO_COM_EMAIL_ACCOUNT_ID}}`, `{{SEQUENCE_IDS}}`, `{{ASSIGNED_ACCOUNTS_OR_TAM_SLICE}}`, `{{MONTHLY_SAL_TARGET}}`, `{{DAILY_EMAILS}}`, `{{DAILY_LINKEDIN}}`, `{{DAILY_CALLS}}`.
+- House-voice constants (fill directly, no interview): sign-off line 1 = `Best,` and sign-off line 2 = `{{FIRST_NAME}}`; cold-email word range = 75 to 99; company = Testsigma; any `{{YOUR_NAME}}` / `{{YOUR_FIRST_NAME}}` maps to the rep's name.
+- Save the template files under their real names: `CLAUDE.template.md` → `CLAUDE.md`; `AGENTS.template.md` → `AGENTS.md`.
+- Grep for `{{` again across the repo — **zero hits = fully configured.**
 
 ## Step 4 — Seed the empties
-Copy each `*.example.*` to its live (gitignored) name: `MASTER_SENT_LIST`, `data/target-accounts.csv`, `data/suppression-list.csv`, `memory/do-not-contact.md`, `warm-leads.md`, `call-log.md`, `pipeline-state.md`. They stay the rep's own and never get pushed.
+Copy each `*.example.*` to its live (gitignored) name: `MASTER_SENT_LIST`, `data/target-accounts.csv`, `data/suppression-list.csv`, `memory/do-not-contact.md`, `memory/warm-leads.md`, `memory/call-log.md`, `memory/pipeline-state.md`. They stay the rep's own and never get pushed. Load the rep's assigned accounts into `data/target-accounts.csv`.
 
 ## Step 5 — Connect tools
-Walk the rep through connecting their CRM / enrichment / email / LinkedIn / calendar. If their stack differs from the skill's examples, update the skill's tool references. Mark any missing tool's steps as manual.
+Walk the rep through connecting their stack: work Chrome profile, Apollo (web + MCP), work Gmail (reply monitoring), Calendar, and the Work tab group for SF/G2. Mark any missing tool's steps as manual until it's connected.
 
 ## Step 6 — Verify
 - Grep the repo for `{{` → empty.
-- Grep for the new rep's name/email only — no one else's appears anywhere.
-- `config.json` is gitignored and unstaged.
-- **Dry run:** have the rep ask for a single small batch and confirm the gauntlet reads *their* ICP, proof points, sender, and voice — and stops for approval before any send.
+- Grep for the new rep's name / email only — **no one else's name, email, or Apollo ID appears anywhere.**
+- `config.json` is gitignored and unstaged; the only identity committed anywhere in the repo is the rep's own.
+- **Dry run:** have the rep ask for a single small batch and confirm the gauntlet reads the baked-in Testsigma ICP + proof points, uses the rep's `.ai` sender and assigned accounts, writes in the house voice, and stops for approval before any send.
 
-Done: the skeleton is now their system. Hand off to `AGENTS.md`.
+Done: the Testsigma house system is now bound to this rep. Hand off to `AGENTS.md`.
