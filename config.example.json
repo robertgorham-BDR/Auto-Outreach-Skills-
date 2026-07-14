@@ -1,79 +1,133 @@
 {
-  "_comment": "Copy to config.json and fill every {{PLACEHOLDER}}. The onboarding skill fills this interactively. config.json is gitignored — your details never get committed. Every field here exists because getting it wrong caused a real problem in a live BDR system; the comments explain why each matters.",
+  "_comment": "Copy to config.json and fill every {{PLACEHOLDER}}. The onboarding skill fills the per-rep placeholders interactively. Everything Testsigma-wide (company, product, personas, proof points, voice, sender rule, process toggles) is already filled in for you. config.json is gitignored so your personal details never get committed. Every field exists because getting it wrong caused a real problem in a live BDR system.",
 
   "bdr": {
-    "name": "{{YOUR_FULL_NAME}}",
+    "name": "{{FULL_NAME}}",
     "role": "BDR",
-    "work_email": "{{YOUR_WORK_EMAIL}}",
-    "personal_email_never_use_for_work": "{{YOUR_PERSONAL_EMAIL}}",
-    "timezone": "{{IANA_TZ_e.g._America/New_York}}",
-    "work_browser_profile": "{{which Chrome/browser profile is WORK — the agent must never use a personal profile for work}}"
+    "work_email": "{{WORK_EMAIL}}",
+    "personal_email_never_use_for_work": "{{PERSONAL_EMAIL_NEVER_USE_FOR_WORK}}",
+    "timezone": "{{TIMEZONE}}",
+    "work_browser_profile": "{{WORK_BROWSER_PROFILE}}",
+    "linkedin_profile_url": "{{LINKEDIN_PROFILE_URL}}"
   },
 
   "company": {
-    "name": "{{COMPANY_NAME}}",
-    "product": "{{PRODUCT_NAME}}",
-    "one_liner": "{{ONE_SENTENCE_ON_WHAT_YOUR_PRODUCT_DOES}}",
-    "website": "{{COMPANY_WEBSITE}}",
-    "key_value_props": ["{{VALUE_PROP_1}}", "{{VALUE_PROP_2}}", "{{VALUE_PROP_3}}"],
-    "product_glossary": { "_comment": "terms your agent should know so it never mis-describes the product", "{{TERM}}": "{{MEANING}}" },
-    "key_customers": ["{{CUSTOMER_A}}", "{{CUSTOMER_B}}"]
+    "name": "Testsigma",
+    "product": "Testsigma",
+    "one_liner": "Agentic AI-powered, unified test automation platform: write tests in plain English and AI creates, runs, and heals them across web, mobile, API, desktop, Salesforce, and SAP.",
+    "founded": "2019",
+    "hq": "San Francisco",
+    "website": "https://testsigma.com",
+    "key_value_props": [
+      "Flaky or brittle tests: AI self-healing fixes broken tests when the UI changes (proof: Hansard cut regression from 8 weeks to 5).",
+      "Too much time creating and running tests: plain-English authoring plus parallel execution (proof: Medibuddy ran 2,500 tests with roughly a 50% maintenance cut).",
+      "Can't scale coverage: NLP plus an AI agent plus cross-browser (proof: CRED reached 90% regression coverage, 5x faster)."
+    ],
+    "product_glossary": {
+      "_comment": "Terms your agent should know so it never mis-describes the product.",
+      "Atto": "The AI-coworker suite of agents: Generator, Sprint Planner, Runner, Analyzer, Healer, and Optimizer.",
+      "Atto 2.0": "The Nov 2025 release: intent-based self-healing, coverage discovery, and risk analysis.",
+      "NLP": "Natural-language authoring: write tests in plain English.",
+      "Copilot": "GenAI assistant that generates tests from prompts, Figma, Jira, or screenshots.",
+      "Self-healing": "AI auto-fixes broken locators and tests when the UI changes; up to roughly 90% maintenance reduction."
+    },
+    "key_customers": [
+      "Cisco",
+      "Samsung",
+      "Honeywell",
+      "Bosch",
+      "Nokia",
+      "Nestle",
+      "KFC",
+      "DHL",
+      "Zeiss",
+      "Axel Springer",
+      "NTUC Fairprice",
+      "Oscar Health",
+      "Sanofi",
+      "Spendflo"
+    ]
   },
 
   "icp": {
-    "_comment": "Persona precision matters more than anything. Enrichment tools mis-classify seniority; the TITLE TEXT rules.",
-    "personas": ["{{PRIMARY_TITLE_1}}", "{{PRIMARY_TITLE_2}}"],
-    "seniority_floor": "{{e.g. Manager and above}}",
-    "include_title_contains": ["Manager", "Director", "VP", "Head", "Chief"],
-    "exclude_title_patterns": ["{{e.g. Lead}}", "{{Senior <IC role>}}", "{{Staff}}", "{{Principal IC}}"],
-    "exclude_wrong_persona": ["{{e.g. clinical/lab QA}}", "{{hardware/mechanical}}", "{{defense/systems}}", "{{compliance/audit QA}}"],
-    "verticals": ["{{VERTICAL_1}}", "{{VERTICAL_2}}", "{{VERTICAL_3}}"],
-    "geo": "{{e.g. United States, Canada}}"
+    "_comment": "Persona precision matters more than anything. Enrichment tools mis-classify seniority; the TITLE TEXT rules. Keep a title only if it contains Manager, Director, VP, Vice President, Head, or Chief AND is not a Lead/Senior/Principal/Staff/IC pattern. Example: 'Senior Software Engineering Manager' KEEPS (Manager wins); 'Senior Software Engineer' DROPS.",
+    "personas": [
+      "QA Manager",
+      "Director/VP of QA",
+      "Software Engineering Manager",
+      "Director/VP Engineering"
+    ],
+    "personas_secondary": ["VP Engineering / CTO (only with buyer intent)"],
+    "seniority_floor": "Manager and above",
+    "include_title_contains": ["Manager", "Director", "VP", "Vice President", "Head", "Chief"],
+    "exclude_title_patterns": ["Lead", "Senior (IC)", "Principal (IC)", "Staff", "SDET", "Automation Lead", "QA Lead", "individual-contributor titles"],
+    "exclude_wrong_persona": ["clinical/lab QA", "hardware/mechanical engineering", "defense/systems engineering", "compliance/audit/risk QA", "facilities engineering"],
+    "verticals": ["SaaS/Tech", "FinTech", "Retail/E-Commerce", "Healthcare/Digital Health", "Telecom", "Pharma"],
+    "geo": "{{GEO_TERRITORY}}"
   },
 
   "scope": {
-    "_comment": "The bounded pool the agent may prospect. Off-list = stop.",
+    "_comment": "The bounded pool the agent may prospect (TAM-only). Off-list = stop.",
+    "tam_only": true,
     "target_accounts_file": "data/target-accounts.csv",
-    "authorized_exception_sources": ["{{e.g. intent-signal list}}"],
-    "accounts_shared_across_reps": "{{true|false — if true, the agent must verify ownership before touching an account}}",
-    "ownership_check": "{{how to confirm an account/contact is YOURS and not another rep's, e.g. CRM Account Owner field}}"
+    "authorized_exception_sources": ["buyer-intent signal accounts (the only approved exception to the TAM-only rule)"],
+    "accounts_shared_across_reps": "{{ACCOUNTS_SHARED_ACROSS_REPS_true_or_false}}",
+    "ownership_check": "{{HOW_TO_CONFIRM_AN_ACCOUNT_IS_YOURS_NOT_ANOTHER_REPS}}"
   },
 
+  "_proof_points_comment": "These three proof stories are external-safe and ship in outreach. Use ONE clean named-proof line per message. The 'verticals' tag = which of our target verticals the proof resonates with for routing; it is not a claim about the customer's own industry.",
   "proof_points": [
-    { "customer": "{{CUSTOMER_1}}", "metric": "{{EXACT_NUMBER_e.g._50%_maintenance_cut}}", "angle": "{{coverage|maintenance|velocity|scale|productivity|multi-platform}}", "verticals": ["{{FIT_VERTICAL}}"] },
-    { "customer": "{{CUSTOMER_2}}", "metric": "{{...}}", "angle": "{{...}}", "verticals": ["{{...}}"] },
-    { "customer": "{{CUSTOMER_3}}", "metric": "{{...}}", "angle": "{{...}}", "verticals": ["{{...}}"] }
+    { "customer": "Hansard", "metric": "cut regression testing from 8 weeks to 5", "angle": "maintenance", "value_prop": "flaky/brittle tests -> AI self-healing", "verticals": ["SaaS/Tech", "FinTech", "Healthcare/Digital Health"] },
+    { "customer": "Medibuddy", "metric": "2,500 tests, roughly 50% maintenance cut", "angle": "velocity", "value_prop": "too much time creating/running tests -> plain English + parallel execution", "verticals": ["Healthcare/Digital Health", "SaaS/Tech"] },
+    { "customer": "CRED", "metric": "90% regression coverage, 5x faster", "angle": "coverage", "value_prop": "can't scale coverage -> NLP + AI agent + cross-browser", "verticals": ["FinTech", "Retail/E-Commerce", "SaaS/Tech"] }
   ],
 
   "voice": {
     "profile_file": "memory/context/voice-profile.md",
-    "sign_off_line_1": "{{EXACT_e.g._Best,}}",
-    "sign_off_line_2": "{{YOUR_FIRST_NAME}}",
-    "banned_sign_offs": ["{{— Name}}", "{{- Name}}", "{{Cheers,}}"],
-    "hard_rules": ["no em dashes", "one CTA", "ask never assert", "no 'I saw/I noticed' resume recap", "no feature-led headline"],
+    "sign_off_line_1": "Best,",
+    "sign_off_line_2": "{{FIRST_NAME}}",
+    "banned_sign_offs": ["- {{FIRST_NAME}} (hyphen sign-off)", "-- {{FIRST_NAME}} (em/en-dash sign-off)", "Cheers,"],
+    "hard_rules": [
+      "no em dashes anywhere, including subject lines",
+      "one CTA per message",
+      "ask, never assert: open with a diagnostic question grounded in a verified fact about their product or company",
+      "never a claim about the prospect's feelings, career, or experience",
+      "no 'I saw' / 'I noticed' resume recap",
+      "no feature-led headline opener",
+      "short sentences, plain peer-to-peer language",
+      "one clean named-proof line",
+      "Touch 1 body 75-99 words",
+      "sign-off is 'Best,' then a newline then your first name"
+    ],
     "word_count": { "cold_email_min": 75, "cold_email_max": 99, "followup_max": 70 },
-    "banned_words": ["{{buzzwords you'd never say}}"],
-    "reference_published_thought_leadership_in_openers": "{{true|false — may the agent open by referencing a prospect's PUBLISHED post/blog/talk? Distinct from profile-mining. Default false.}}"
+    "banned_words": ["revolutionary", "cutting-edge", "seamless", "synergy", "game-changer", "unlock", "leverage", "supercharge", "best-in-class", "world-class"],
+    "reference_published_thought_leadership_in_openers": false
   },
 
   "cta_rules": {
     "_comment": "CTA style differs by motion. Getting this wrong tanks reply rates.",
-    "cold_outbound": "{{engagement question | meeting ask — e.g. engagement question that invites them to share their situation}}",
-    "inbound": "{{engagement-first, NO meeting ask}}",
-    "warm_followup": "{{soft next-step}}"
+    "cold_outbound": "meeting ask in the 'What day works' style, OUTBOUND ONLY",
+    "inbound": "engagement-first, NO meeting ask; reference the inbound action and ask one low-friction question",
+    "warm_followup": "soft next-step tied to their reply, no hard meeting push"
   },
 
   "tech_stack": {
-    "crm": "{{Salesforce|HubSpot|none}}",
-    "enrichment": "{{Apollo|ZoomInfo|Clay|none}}",
-    "email_tool": "{{Apollo|Outreach|Salesloft|Gmail}}",
-    "linkedin": "{{Sales Navigator|Basic}}",
-    "calendar": "{{Google|Outlook|none}}",
-    "sender_addresses": ["{{YOUR_PRIMARY_SENDING_EMAIL}}"],
-    "sender_rules_by_sequence": { "_comment": "if different motions send from different addresses", "{{sequence_name}}": "{{which sending address}}" },
-    "sequence_ids": { "_comment": "YOUR tool's IDs. Never commit real IDs to a shared repo — they live here in gitignored config only.", "primary_outbound": "{{YOUR_SEQUENCE_ID}}" },
-    "agent_may_act_in": ["{{tools the agent may take actions in}}"],
-    "agent_read_only": ["{{tools the agent may only read, never post/act}}"]
+    "crm": "Salesforce",
+    "enrichment": "Apollo",
+    "email_tool": "Apollo",
+    "linkedin": "LinkedIn Sales Navigator",
+    "calendar": "Google Calendar",
+    "apollo_account_email": "{{APOLLO_ACCOUNT_EMAIL}}",
+    "sender_addresses": ["{{SENDER_EMAIL}}"],
+    "sender_domain_rule": {
+      "_comment": "Testsigma-wide rule: all outreach sends from the rep's .ai address. The .com address is exception-only.",
+      "default": "{{SENDER_EMAIL}} (firstname.lastname@testsigma.ai) on every batch, every motion",
+      "exception_only": "{{WORK_EMAIL}} (.com) for rare, direct, fully-customized replies to a warm or inbound prospect, e.g. someone who asked for a demo"
+    },
+    "sender_rules_by_sequence": { "_comment": "Default is the .ai address for all sequences; override here only for a specific motion.", "primary_outbound": "{{SENDER_EMAIL}}" },
+    "sequence_ids": { "_comment": "YOUR tool's IDs. Never commit real IDs to a shared repo; they live in gitignored config only.", "primary_outbound": "{{SEQUENCE_IDS}}", "apollo_ai_email_account_id": "{{APOLLO_AI_EMAIL_ACCOUNT_ID}}", "apollo_com_email_account_id": "{{APOLLO_COM_EMAIL_ACCOUNT_ID}}" },
+    "agent_may_act_in": ["Apollo (enrichment + email composer)", "LinkedIn Sales Navigator (drafting)"],
+    "agent_read_only": ["Salesforce (CRM)", "Gmail (reply monitoring only)"]
   },
 
   "research": {
@@ -82,23 +136,34 @@
     "sales_nav_depth_when_activity_thin": true,
     "no_fabricated_claims": true,
     "no_subagent_profile_captures": true,
+    "verify_company_anchor_fact_before_drafting": true,
+    "load_writing_canon_before_drafting": true,
     "source_width_multiplier": 4
   },
 
   "quota": {
-    "monthly_target": "{{e.g. 4 qualified opportunities}}",
-    "daily_activity_targets": { "emails": "{{N}}", "linkedin_requests": "{{N}}", "calls": "{{N}}" },
-    "best_send_window": "{{e.g. 12-5 PM local, never after 6 PM}}"
+    "monthly_target": "{{MONTHLY_SAL_TARGET}} SALs (BANT-qualified opportunities) per month",
+    "sal_definition": "SAL = intro call to demo that converts to a BANT-qualified opportunity the team pursues with a good chance of winning",
+    "tracked_activity": ["accounts touched", "emails", "linkedin", "cold calls"],
+    "daily_activity_targets": { "emails": "{{DAILY_EMAILS}}", "linkedin_requests": "{{DAILY_LINKEDIN}}", "calls": "{{DAILY_CALLS}}" },
+    "derive_daily_from_funnel_math": true,
+    "best_send_window": "{{BEST_SEND_WINDOW}}"
   },
 
   "guardrails": {
     "require_approval_before_send": true,
-    "approval_model": "{{per-send | batch — e.g. one APPROVE SEND per batch, then execute autonomously}}",
+    "approval_model": "batch: build all drafts, run per-draft QC, present one batch review, get a single APPROVE SEND, then execute the send-all autonomously",
+    "tam_only_prospecting": true,
+    "enrich_first": true,
+    "dedup_before_draft": true,
     "log_every_send_to_master": true,
     "verified_email_only": true,
     "t2_must_be_reply_on_thread": true,
     "never_act_visible_to_coworkers": true,
     "never_touch_other_reps_data": true,
+    "no_fabricated_claims": true,
+    "batch_intake_routing": "survey the rep's existing sequences FIRST, then dispose each contact preferring a sequence with a manual email step > a sequence with an automated-template step > a LinkedIn step > a one-off manual email; ask ONE upfront multiple-choice question if routing is unclear",
+    "linkedin_cr_research_gate": "one live evidence file per candidate captured in main context; judge persona on the LIVE headline not enrichment; every activity hook must trace to a verbatim quote or be dropped; 2nd/3rd-degree only; per-row traceability; no JS-only connection-request sends on public profiles (use the Sales Navigator real-mouse flow with char-for-char readback)",
     "scope_source": "data/target-accounts.csv",
     "dnc_source": "memory/do-not-contact.md"
   }
